@@ -2,20 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FrekwencjaZnakow
+namespace FrekwencjaLiter
 {
     public static class Program
     {
         public static void Main(string[] args)
         {
-            var cases = int.Parse(Console.ReadLine());
-            //var cases = 1;
-            string[] senntencesTab = new string[cases];
-            string[] queriesTab = new string[cases];
-            for (int i = 0; i < cases; i++)
+            var input = int.Parse(Console.ReadLine());
+            string[] zdaniaTabela = new string[input];
+            string[] zapytaniaTabela = new string[input];
+            for (int i = 0; i < input; i++)
             {
-                //senntencesTab[i] = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
-                senntencesTab[i] = Console.ReadLine()
+                zdaniaTabela[i] = Console.ReadLine()
                                 .Replace("!", "")
                                 .Replace("?", "")
                                 .Replace(",", "")
@@ -37,103 +35,96 @@ namespace FrekwencjaZnakow
                                 .Replace("8", "")
                                 .Replace("9", "")
                                 .Replace("0", "")
-                                .Replace(" ", "")
-                                .Replace("  ", "")
-                                .Replace("   ", "")
                                 .Replace("\'", "")
                                 .Replace("\"", "")
                                 .Replace("\\", "")
+                                .Replace(" ", "")
+                                .Replace("  ", "")
+                                .Replace("   ", "")
                                 .ToLower();
-                //queriesTab[i] = "first 4 byfreq asc byletter desc"
-                queriesTab[i] = Console.ReadLine()
+                zapytaniaTabela[i] = Console.ReadLine()
                                 .ToLower();
             }
-            // 0: Pierwsze / ostatnie
-            // 1: Liczba wyrazów
-            // 2: Częstość wystąpień / ze względu na znaki, leksykograficznie
-            // 3: Sortowanie
-            // -- W przypdaku równości --
-            // 4: Częstość wystąpień / ze względu na znaki, leksykograficznie
-            // 5: Sortowanie
+           
 
-            for (int i = 0; i < cases; i++)
+            for (int i = 0; i < input; i++)
             {
-                var query = queriesTab[i].Split(' ');
-                var countOfWords = int.Parse(query[1]);
-                var lettersList = new List<char>();
-                lettersList.AddRange(senntencesTab[i]);
-                var resultList = lettersList.GroupBy(x => x).Select(y => new { letter = y.Key, amount = y.Count() }).ToList();
+                var zapytanie = zapytaniaTabela[i].Split(' ');
+                var iloscSlow = int.Parse(zapytanie[1]);
+                var listaLiter = new List<char>();
+                listaLiter.AddRange(zdaniaTabela[i]);
+                var listaWyniki = listaLiter.GroupBy(x => x).Select(y => new { letter = y.Key, amount = y.Count() }).ToList();
 
-                if (query.Length < 5)
-                    switch (query[2])
+                if (zapytanie.Length < 5)
+                    switch (zapytanie[2])
                     {
                         case "byfreq":
                             {
-                                if (query[3] == "asc")
-                                    resultList = resultList.OrderBy(x => x.amount).ToList();
-                                else if (query[3] == "desc")
-                                    resultList = resultList.OrderByDescending(x => x.amount).ToList();
+                                if (zapytanie[3] == "asc")
+                                    listaWyniki = listaWyniki.OrderBy(x => x.amount).ToList();
+                                else if (zapytanie[3] == "desc")
+                                    listaWyniki = listaWyniki.OrderByDescending(x => x.amount).ToList();
                             }
                             break;
                         case "byletter":
                             {
-                                if (query[3] == "asc")
-                                    resultList = resultList.OrderBy(x => x.letter).ToList();
-                                else if (query[3] == "desc")
-                                    resultList = resultList.OrderByDescending(x => x.letter).ToList();
+                                if (zapytanie[3] == "asc")
+                                    listaWyniki = listaWyniki.OrderBy(x => x.letter).ToList();
+                                else if (zapytanie[3] == "desc")
+                                    listaWyniki = listaWyniki.OrderByDescending(x => x.letter).ToList();
                             }
                             break;
                     }
-                else if (query.Length >= 5)
-                    switch (query[2])
+                else if (zapytanie.Length >= 5)
+                    switch (zapytanie[2])
                     {
                         case "byfreq":
                             {
-                                if (query[3] == "asc" && query[5] == "asc")
-                                    resultList = resultList.OrderBy(x => x.amount).ThenBy(y => y.letter).ToList();
-                                if (query[3] == "desc" && query[5] == "desc")
-                                    resultList = resultList.OrderByDescending(x => x.amount).ThenByDescending(y => y.letter).ToList();
-                                if (query[3] == "asc" && query[5] == "desc")
-                                    resultList = resultList.OrderBy(x => x.amount).ThenByDescending(y => y.letter).ToList();
-                                if (query[3] == "desc" && query[5] == "asc")
-                                    resultList = resultList.OrderByDescending(x => x.amount).ThenBy(y => y.letter).ToList();
+                                if (zapytanie[3] == "asc" && zapytanie[5] == "asc")
+                                    listaWyniki = listaWyniki.OrderBy(x => x.amount).ThenBy(y => y.letter).ToList();
+                                if (zapytanie[3] == "desc" && zapytanie[5] == "desc")
+                                    listaWyniki = listaWyniki.OrderByDescending(x => x.amount).ThenByDescending(y => y.letter).ToList();
+                                if (zapytanie[3] == "asc" && zapytanie[5] == "desc")
+                                    listaWyniki = listaWyniki.OrderBy(x => x.amount).ThenByDescending(y => y.letter).ToList();
+                                if (zapytanie[3] == "desc" && zapytanie[5] == "asc")
+                                    listaWyniki = listaWyniki.OrderByDescending(x => x.amount).ThenBy(y => y.letter).ToList();
                             }
                             break;
                         case "byletter":
                             {
-                                if (query[3] == "asc" && query[5] == "asc")
-                                    resultList = resultList.OrderBy(x => x.letter).ThenBy(y => y.amount).ToList();
-                                if (query[3] == "desc" && query[5] == "desc")
-                                    resultList = resultList.OrderByDescending(x => x.letter).ThenByDescending(y => y.amount).ToList();
-                                if (query[3] == "asc" && query[5] == "desc")
-                                    resultList = resultList.OrderBy(x => x.letter).ThenByDescending(y => y.amount).ToList();
-                                if (query[3] == "desc" && query[5] == "asc")
-                                    resultList = resultList.OrderByDescending(x => x.letter).ThenBy(y => y.amount).ToList();
+                                if (zapytanie[3] == "asc" && zapytanie[5] == "asc")
+                                    listaWyniki = listaWyniki.OrderBy(x => x.letter).ThenBy(y => y.amount).ToList();
+                                if (zapytanie[3] == "desc" && zapytanie[5] == "desc")
+                                    listaWyniki = listaWyniki.OrderByDescending(x => x.letter).ThenByDescending(y => y.amount).ToList();
+                                if (zapytanie[3] == "asc" && zapytanie[5] == "desc")
+                                    listaWyniki = listaWyniki.OrderBy(x => x.letter).ThenByDescending(y => y.amount).ToList();
+                                if (zapytanie[3] == "desc" && zapytanie[5] == "asc")
+                                    listaWyniki = listaWyniki.OrderByDescending(x => x.letter).ThenBy(y => y.amount).ToList();
                             }
                             break;
                     }
 
-                var results = resultList.Take(resultList.Count);
-                switch(query[0])
+                var wyniki = listaWyniki.Take(listaWyniki.Count);
+                switch(zapytanie[0])
                 {
                     case "first":
                         {
-                            results = resultList.Take(countOfWords);
+                            wyniki = listaWyniki.Take(iloscSlow);
                             
                         }break;
                     case "last":
                         {
-                            results = resultList.Skip(resultList.Count - countOfWords);
+                            wyniki = listaWyniki.Skip(listaWyniki.Count - iloscSlow);
                         }
                         break;
                 }
 
-                foreach (var result in results)
+                foreach (var wynik in wyniki)
                 {
-                    Console.WriteLine($"{result.letter} {result.amount}");
+                    Console.WriteLine($"{wynik.letter} {wynik.amount}");
                 }
 
-                if (cases > i)
+                if (input > i)
                     Console.WriteLine();
             }
         }
